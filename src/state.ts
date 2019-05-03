@@ -16,6 +16,10 @@ export class State<S extends object, T>{
     return new State(s => [x, s]);
   }
 
+  static empty(): State<{}, null> {
+    return State.pure(null);
+  }
+
   run(state: S): [T, S] {
     return this.fn(state);
   }
@@ -47,7 +51,7 @@ export class State<S extends object, T>{
   }
 
   static put<S extends object, K extends keyof S>(key: K, x: S[K]): State<S, null> {
-    return new State(s => [null, { ...s, [key]: x }]) as any;
+    return new State(s => [null, { ...s, [key]: x }]);
   }
 
   static modifyAll<S extends object>(f: (s: S) => S): State<S, null> {
@@ -58,5 +62,12 @@ export class State<S extends object, T>{
   static modify<S extends object, K extends keyof S>(key: K, f: (s: S[K]) => S[K]): State<S, null> {
     return State.get<S, K>(key)
       .then(s => State.put(key, f(s)));
+  }
+
+  define<R extends Record<Key, any>>(valueFn: (x: T) => R): State<Overwrite<S, R>, null> {
+    return new State(s => {
+      const [x, state] = this.fn(s);
+      return [null, { ...state, ...valueFn(x) } as any]
+    });
   }
 }
