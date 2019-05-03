@@ -4,9 +4,16 @@ export type StateFn<S extends object, T> = (state: S) => [T, S];
 
 export type Key = string | symbol | number;
 
+type Cast<A, B> = A extends B ? A : B;
+
+type KeyFilter<T, P extends object, _Temp extends keyof P=keyof P> = _Temp extends infer X ? (P[Cast<X, keyof P>] extends T ? X : never) : never;
+type PassObj<S extends object, ThenState extends object> = { [P in keyof ThenState]: KeyFilter<ThenState[P], S> };
+
 export function state<S extends object, T>(fn: StateFn<S, T>): State<S, T> {
   return new State(fn);
 }
+
+// TODO: passAndThenに同じ変数を渡しても対応出来るようにしたい
 
 export class State<S extends object, T>{
   constructor(private readonly fn: StateFn<S, T>) {
@@ -95,6 +102,24 @@ export class State<S extends object, T>{
       }
 
       return [x2, resState as any];
+    });
+  }
+
+  passAndThen<ThenState extends object, R>(f: (x: T) => State<ThenState, R>, pass: PassObj<S, ThenState>): State<S, R> {
+    return new State<S, R>(s => {
+      const [a, newState] = this.fn(s);
+      const passState: any = {};
+      for (let key of Object.keys(pass)) {
+        passState[key] = (newState as any)[(pass as any)[key]];
+      }
+      const [b, newPassState] = f(a).fn(passState);
+      const resState: any = { ...newState };
+
+      for (let key of Object.keys(pass)) {
+        resState[(pass as any)[key]] = (newPassState as any)[key];
+      }
+
+      return [b, resState];
     });
   }
 }
