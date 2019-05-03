@@ -84,6 +84,7 @@ export class State<S extends object, T>{
 
       const [x2, newState2] = f.fn({ ...newState1, ...value } as any);
 
+      // データを元に戻す
       const resState = { ...newState2 };
       for (let { k, v } of data) {
         if (v !== null) {
