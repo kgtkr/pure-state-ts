@@ -64,10 +64,36 @@ export class State<S extends object, T>{
       .then(s => State.put(key, f(s)));
   }
 
-  define<R extends Record<Key, any>>(valueFn: (x: T) => R): State<Overwrite<S, R>, null> {
-    return new State(s => {
-      const [x, state] = this.fn(s);
-      return [null, { ...state, ...valueFn(x) } as any]
+  defineAnd<D extends object, R>(valueFn: (x: T) => D, f: State<Overwrite<S, D>, R>): State<S, R> {
+    return new State<S, R>(s => {
+      const [x1, newState1] = this.fn(s);
+      const value = valueFn(x1);
+
+      // 定義された変数を元に戻すためのデータ
+      const data: {
+        k: Key,
+        v: { value: any } | null
+      }[] = [];
+      for (let key of Object.keys(value)) {
+        if (key in newState1) {
+          data.push({ k: key, v: { value: (value as any)[key] } });
+        } else {
+          data.push({ k: key, v: null });
+        }
+      }
+
+      const [x2, newState2] = f.fn({ ...newState1, ...value } as any);
+
+      const resState = { ...newState2 };
+      for (let { k, v } of data) {
+        if (v !== null) {
+          (resState as any)[k] = v;
+        } else {
+          delete (resState as any)[k];
+        }
+      }
+
+      return [x2, resState as any];
     });
   }
 }
