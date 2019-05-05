@@ -2,11 +2,9 @@ import { Overwrite } from "type-zoo";
 
 export type StateFn<S extends object, T> = (state: S) => [T, S];
 
-export type Key = string | symbol | number;
-
 type Cast<A, B> = A extends B ? A : B;
 
-type KeyFilter<T, P extends object, _Temp extends keyof P=keyof P> = _Temp extends infer X ? (P[Cast<X, keyof P>] extends T ? X : never) : never;
+type KeyFilter<T, P extends object, _Temp extends keyof P = keyof P> = _Temp extends infer X ? (P[Cast<X, keyof P>] extends T ? X : never) : never;
 type PassObj<S extends object, ThenState extends object> = { [P in keyof ThenState]: KeyFilter<ThenState[P], S> };
 
 export function state<S extends object, T>(fn: StateFn<S, T>): State<S, T> {
@@ -78,7 +76,7 @@ export class State<S extends object, T>{
 
       // 定義された変数を元に戻すためのデータ
       const data: {
-        k: Key,
+        k: keyof any,
         v: { value: any } | null
       }[] = [];
       for (let key of Object.keys(value)) {
