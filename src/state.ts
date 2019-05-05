@@ -29,6 +29,14 @@ export class State<S extends object, T>{
     return this.fn(state);
   }
 
+  eval(state: S): T {
+    return this.fn(state)[0];
+  }
+
+  exec(state: S): S {
+    return this.fn(state)[1];
+  }
+
   map<P>(f: (x: T) => P): State<S, P> {
     return new State(s1 => {
       const [res, s2] = this.fn(s1);
