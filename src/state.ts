@@ -7,14 +7,14 @@ type Cast<A, B> = A extends B ? A : B;
 type KeyFilter<T, P extends object, _Temp extends keyof P = keyof P> = _Temp extends infer X ? (P[Cast<X, keyof P>] extends T ? X : never) : never;
 type PassObj<S extends object, ThenState extends object> = { [P in keyof ThenState]: KeyFilter<ThenState[P], S> };
 
-export function state<S extends object, T>(fn: StateFn<S, T>): State<S, T> {
-  return new State(fn);
-}
-
 // TODO: passAndThenに同じ変数を渡しても対応出来るようにしたい
 
 export class State<S extends object, T>{
   constructor(private readonly fn: StateFn<S, T>) {
+  }
+
+  static state<S extends object, T>(fn: StateFn<S, T>): State<S, T> {
+    return new State(fn);
   }
 
   static pure<S extends object, T>(x: T): State<S, T> {
