@@ -10,7 +10,7 @@ type PassObj<S extends object, ThenState extends object> = { [P in keyof ThenSta
 // TODO: passAndThenに同じ変数を渡しても対応出来るようにしたい
 
 export class State<S extends object, T>{
-  constructor(private readonly fn: StateFn<S, T>) {
+  private constructor(private readonly fn: StateFn<S, T>) {
   }
 
   static state<S extends object, T>(fn: StateFn<S, T>): State<S, T> {
