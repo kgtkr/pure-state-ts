@@ -34,7 +34,7 @@ describe("State", () => {
 
   describe("get", () => {
     it("get", () => {
-      const st = State.get<{ x: number, y: string }>()("y");
+      const st = State.get<{ x: number, y: string }, "y">("y");
       expect(st.run({ x: 0, y: "" })).toEqual(["", { x: 0, y: "" }]);
     });
   });

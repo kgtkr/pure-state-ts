@@ -55,9 +55,8 @@ export class State<S extends object, T>{
     return new State(s => [s, s]);
   }
 
-  static get<S extends object>() {
-    return <K extends keyof S>(key: K): State<S, S[K]> =>
-      new State(s => [s[key], s]);
+  static get<S extends object, K extends keyof S>(key: K): State<S, S[K]> {
+    return new State(s => [s[key], s]);
   }
 
   static putAll<S extends object>(x: S): State<S, null> {
