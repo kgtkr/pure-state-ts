@@ -45,4 +45,11 @@ describe("State", () => {
       expect(st.run({ x: 0 })).toEqual([null, { x: 1 }]);
     });
   });
+
+  describe("put", () => {
+    it("put", () => {
+      const st = State.put<{ x: number, y: number }, "x">("x", 2);
+      expect(st.run({ x: 0, y: 1 })).toEqual([null, { x: 2, y: 1 }]);
+    });
+  });
 });
