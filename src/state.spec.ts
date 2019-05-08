@@ -74,4 +74,18 @@ describe("State", () => {
       expect(st.run({ x: "a", y: "b" })).toEqual(["A10c", { x: "a", y: "b" }]);
     });
   });
+
+  describe("passAndThen", () => {
+    it("passAndThen", () => {
+      const addAndMul = (a: number) => State.modify<{ b: number, z: string }, "b">("b", b => a + b)
+        .then(() => State.modify("z", z => z.toUpperCase()))
+        .then(() => State.get("b"))
+        .map(b => a * b);
+
+      const st = State.pure<{ x: number, y: number, z: string }, null>(null)
+        .then(() => State.get("x"))
+        .passAndThen(x => addAndMul(x), { b: "y", z: "z" });
+      expect(st.run({ x: 2, y: 3, z: "a" })).toEqual([10, { x: 2, y: 5, z: "A" }]);
+    });
+  });
 });
