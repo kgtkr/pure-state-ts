@@ -66,4 +66,12 @@ describe("State", () => {
       expect(st.run({ x: 1, y: 2 })).toEqual([null, { x: 10, y: 2 }]);
     });
   });
+
+  describe("defineAnd", () => {
+    it("defineAnd", () => {
+      const st = State.pure<{ x: string, y: string }, null>(null)
+        .defineAnd(() => ({ y: 1, z: "c" }), State.state(s => [s.x.toUpperCase() + (s.y * 10) + s.z, s]));
+      expect(st.run({ x: "a", y: "b" })).toEqual(["A10c", { x: "a", y: "b" }]);
+    });
+  });
 });
