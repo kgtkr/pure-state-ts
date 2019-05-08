@@ -52,4 +52,18 @@ describe("State", () => {
       expect(st.run({ x: 0, y: 1 })).toEqual([null, { x: 2, y: 1 }]);
     });
   });
+
+  describe("modifyAll", () => {
+    it("modifyAll", () => {
+      const st = State.modifyAll<{ x: number }>(x => ({ ...x, x: x.x * 10 }));
+      expect(st.run({ x: 1 })).toEqual([null, { x: 10 }]);
+    });
+  });
+
+  describe("modify", () => {
+    it("modify", () => {
+      const st = State.modify<{ x: number, y: number }, "x">("x", x => x * 10);
+      expect(st.run({ x: 1, y: 2 })).toEqual([null, { x: 10, y: 2 }]);
+    });
+  });
 });
