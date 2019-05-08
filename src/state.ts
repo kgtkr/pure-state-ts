@@ -73,7 +73,7 @@ export class State<S extends object, T>{
   }
 
   static modify<S extends object, K extends keyof S>(key: K, f: (s: S[K]) => S[K]): State<S, null> {
-    return State.get<S>()<K>(key)
+    return State.get<S, K>(key)
       .then(s => State.put(key, f(s)));
   }
 
