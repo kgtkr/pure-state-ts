@@ -93,7 +93,7 @@ export class State<S extends object, T>{
       }[] = [];
       for (let key of Object.keys(value)) {
         if (key in newState1) {
-          data.push({ k: key, v: { value: (value as any)[key] } });
+          data.push({ k: key, v: { value: (s as any)[key] } });
         } else {
           data.push({ k: key, v: null });
         }
@@ -105,7 +105,7 @@ export class State<S extends object, T>{
       const resState = { ...newState2 };
       for (let { k, v } of data) {
         if (v !== null) {
-          (resState as any)[k] = v;
+          (resState as any)[k] = v.value;
         } else {
           delete (resState as any)[k];
         }
