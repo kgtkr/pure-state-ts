@@ -38,4 +38,11 @@ describe("State", () => {
       expect(st.run({ x: 0, y: "" })).toEqual(["", { x: 0, y: "" }]);
     });
   });
+
+  describe("putAll", () => {
+    it("putAll", () => {
+      const st = State.putAll<{ x: number }>({ x: 1 });
+      expect(st.run({ x: 0 })).toEqual([null, { x: 1 }]);
+    });
+  });
 });
