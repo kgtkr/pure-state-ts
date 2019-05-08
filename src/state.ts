@@ -55,6 +55,10 @@ export class State<S extends object, T>{
     });
   }
 
+  and<R>(s: State<S, R>): State<S, R> {
+    return this.then(() => s);
+  }
+
   static getAll<S extends object>(): State<S, S> {
     return new State(s => [s, s]);
   }
