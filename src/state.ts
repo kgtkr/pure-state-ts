@@ -29,6 +29,10 @@ export class State<S extends object, T>{
     return this.fn(state);
   }
 
+  runEmpty(this: State<{}, T>): T {
+    return this.fn({})[0];
+  }
+
   eval(state: S): T {
     return this.fn(state)[0];
   }
